@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -86,18 +87,21 @@ def generate_wash_bar_plot(file_path, col_name, y_label, row_names):
 
     plt.tight_layout()
     plt.show()
-
-
+    
     date = datetime.date.today()
+
+    os.makedirs(f"plots/pdf/{date}", exist_ok=True)
+    os.makedirs(f"plots/svg/{date}", exist_ok=True)
+    
     fig.savefig(
-        f"plots/pdf/{date}/16-10-wash-results-{col_name}.pdf",
+        f"plots/pdf/{date}/16-10-wash-results-{y_label}-{filter}.pdf",
         bbox_inches="tight",   # trims white space
         dpi=300,               # for raster elements (still vector overall)
         transparent=True       # if you want transparent background
     )
     
     fig.savefig(
-        f"plots/svg/{date}/16-10-wash-results-{col_name}.svg",
+        f"plots/svg/{date}/16-10-wash-results-{y_label}-{filter}.svg",
         bbox_inches="tight",   # trims white space
         dpi=300,               # for raster elements (still vector overall)
         transparent=True       # if you want transparent background
