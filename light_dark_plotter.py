@@ -18,7 +18,7 @@ plt.rcParams.update({
     "ytick.labelsize": 10,
 })
 
-def generate_light_dark_plot(file_path, savefile, col_name, y_label, row_names, light_dark, filter):
+def generate_light_dark_plot(file_path, savefile, col_name, y_label, row_names, light_dark):
     # Create plots folder (safe if exists)
     os.makedirs("plots", exist_ok=True)
 
@@ -84,7 +84,7 @@ def generate_light_dark_plot(file_path, savefile, col_name, y_label, row_names, 
     n_conditions = len(unique_conditions)
     width = 0.8 / n_conditions
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(12, 3))
 
     # Assign one color per condition (take first prefix's color that matches)
     cond_colors = {}
@@ -145,6 +145,7 @@ def generate_light_dark_plot(file_path, savefile, col_name, y_label, row_names, 
     ax.yaxis.grid(True, linestyle="-", linewidth=0.8, alpha=0.4)
     ax.set_axisbelow(True)
 
+    plt.xticks(rotation=45, ha='right', fontsize=10)
     plt.tight_layout()
     plt.show()
     
@@ -154,15 +155,17 @@ def generate_light_dark_plot(file_path, savefile, col_name, y_label, row_names, 
     os.makedirs(f"plots/pdf/{date}", exist_ok=True)
     os.makedirs(f"plots/svg/{date}", exist_ok=True)
     
+    channel = col_name.split("::")[1].strip().split(" ")[0].split(")")[0]
+    
     fig.savefig(
-        f"plots/pdf/{date}/{savefile}-light-dark-{y_label}-{filter}.pdf",
+        f"plots/pdf/{date}/{savefile}-light-dark-{y_label}-{channel}.pdf",
         bbox_inches="tight",   # trims white space
         dpi=300,               # for raster elements (still vector overall)
         transparent=True       # if you want transparent background
     )
     
     fig.savefig(
-        f"plots/svg/{date}/{savefile}-light-dark-{y_label}-{filter}.svg",
+        f"plots/svg/{date}/{savefile}-light-dark-{y_label}-{channel}.svg",
         bbox_inches="tight",   # trims white space
         dpi=300,               # for raster elements (still vector overall)
         transparent=True       # if you want transparent background
@@ -178,22 +181,20 @@ if __name__ == "__main__":
     
     y_label = "Geometric Mean"
     
-    filter = "355nm405-30-A"
-    
     file = "data/28-Oct-2025 FlowJo table.csv"
     
     savefile = "28-10-25"
     
-# light_dark = {
-#     "01": {"condition": "Dark", "color": "#00f7ff"},
-#     "02": {"condition": "Light", "color": "#8200c8"},
-# }
+    # light_dark = {
+    #     "01": {"condition": "Dark", "color": "#00f7ff"},
+    #     "02": {"condition": "Light", "color": "#8200c8"},
+    # }
 
-light_dark = {
-    "02": {"condition": "Light", "color": "#d86ecc"},
-    "01": {"condition": "Dark", "color": "#bfbfbf"},
-}
+    light_dark = {
+        "02": {"condition": "Light", "color": "#d86ecc"},
+        "01": {"condition": "Dark", "color": "#bfbfbf"},
+    }
 
 
-for col_name in column_names:
-    generate_light_dark_plot(file, savefile, col_name, y_label, row_names, light_dark, filter)
+    for col_name in column_names:
+        generate_light_dark_plot(file, savefile, col_name, y_label, row_names, light_dark)
